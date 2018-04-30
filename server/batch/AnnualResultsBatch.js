@@ -3,34 +3,25 @@ const $ = require('cheerio');
 const Sequelize = require('sequelize');
 
 const lookupMasterModel = require('../model/LookupMasterModel');
+const lookupMasterServices = require('../services/LookupMasterService');
 
-function fetchAndSaveAnnualResults(){
 
-	request.get(bseUrl,(error, response, body) => {
-	    if(error) {
-	        return console.dir(error);
-	    }
-	    var table=$(body).find("#leftcontainer").find('table')[0];
 
-	    for(var i=0;i<2;i++){
-		    var parentTrs=$(table).find('tbody').find('tr').find('td')[i];
-		    var childTable=$(parentTrs).find('table').find('tbody').find('tr');
-			    childTable.each(function(index,tr){
-				    var jsonObj=companyModel.build();
-				    	$(tr).find('td').each(function(ind,td){
-				    		if(ind==0){
-				    			jsonObj.name=$(td).find('a').text();
-				    		}else if(ind==1){
-				    			jsonObj.bseCode=$(td).text();
-				    		}
-					    });
-				    jsonObj.save();
-			   });
-	    };
-		console.log('saved Annual Results data recorded into table at '+ new Date());
-	});
+function getURLForAnnualResult(){
+	let data=lookupMasterServices.getURLForAnnualResult();
+	data.then(function(d){
+		d.map(function(a){
+			request.get(a.keyValue3,(error, response, body) => {
+				if(error) {
+					console.dir(error);
+					reject(error)
+				}
+				console.log(body)
+			})
+		})	
+	});	
 };
 
 module.exports={
-	fetchAndSaveAnnualResults: fetchAndSaveAnnualResults
+		getURLForAnnualResult: getURLForAnnualResult
 };

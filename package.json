@@ -1,6 +1,6 @@
 {
-  "name": "puntgo",
-  "version": "0.0.0",
+  "name": "conclusion",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "start": "node ./config/bin/www",
